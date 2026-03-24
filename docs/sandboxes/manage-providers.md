@@ -136,8 +136,10 @@ The following provider types are supported.
 | `github` | `GITHUB_TOKEN`, `GH_TOKEN` | GitHub API, `gh` CLI — refer to {doc}`/tutorials/github-sandbox` |
 | `gitlab` | `GITLAB_TOKEN`, `GLAB_TOKEN`, `CI_JOB_TOKEN` | GitLab API, `glab` CLI |
 | `nvidia` | `NVIDIA_API_KEY` | NVIDIA API Catalog |
+| `ollama` | `OLLAMA_API_KEY` | Remote Ollama inference endpoints. Default base URL `http://host.openshell.internal:11434/v1`. |
 | `openai` | `OPENAI_API_KEY` | Any OpenAI-compatible endpoint. Set `--config OPENAI_BASE_URL` to point to the provider. Refer to {doc}`/inference/configure`. |
 | `opencode` | `OPENCODE_API_KEY`, `OPENROUTER_API_KEY`, `OPENAI_API_KEY` | opencode tool |
+| `openrouter` | `OPENROUTER_API_KEY` | OpenRouter API — aggregated access to multiple LLM providers. |
 
 :::{tip}
 Use the `generic` type for any service not listed above. You define the
@@ -152,11 +154,13 @@ The following providers have been tested with `inference.local`. Any provider th
 |---|---|---|---|---|
 | NVIDIA API Catalog | `nvidia-prod` | `nvidia` | `https://integrate.api.nvidia.com/v1` | `NVIDIA_API_KEY` |
 | Anthropic | `anthropic-prod` | `anthropic` | `https://api.anthropic.com` | `ANTHROPIC_API_KEY` |
+| OpenRouter | `openrouter` | `openrouter` | `https://openrouter.ai/api/v1` | `OPENROUTER_API_KEY` |
 | Baseten | `baseten` | `openai` | `https://inference.baseten.co/v1` | `OPENAI_API_KEY` |
 | Bitdeer AI | `bitdeer` | `openai` | `https://api-inference.bitdeer.ai/v1` | `OPENAI_API_KEY` |
 | Deepinfra | `deepinfra` | `openai` | `https://api.deepinfra.com/v1/openai` | `OPENAI_API_KEY` |
 | Groq | `groq` | `openai` | `https://api.groq.com/openai/v1` | `OPENAI_API_KEY` |
-| Ollama (local) | `ollama` | `openai` | `http://host.openshell.internal:11434/v1` | `OPENAI_API_KEY` |
+| Ollama (local) | `ollama` | `ollama` | `http://host.openshell.internal:11434/v1` | `OLLAMA_API_KEY` |
+| Ollama (remote) | `ollama-remote` | `ollama` | User-configured via `--config OLLAMA_BASE_URL` | `OLLAMA_API_KEY` |
 | LM Studio (local) | `lmstudio` | `openai` | `http://host.openshell.internal:1234/v1` | `OPENAI_API_KEY` |
 
 Refer to your provider's documentation for the correct base URL, available models, and API key setup. To configure inference routing, refer to {doc}`/inference/configure`.
