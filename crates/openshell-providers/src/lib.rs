@@ -86,6 +86,8 @@ impl ProviderRegistry {
         registry.register(providers::gitlab::GitlabProvider);
         registry.register(providers::github::GithubProvider);
         registry.register(providers::outlook::OutlookProvider);
+        registry.register(providers::openrouter::OpenrouterProvider);
+        registry.register(providers::ollama::OllamaProvider);
         registry
     }
 
@@ -138,6 +140,8 @@ pub fn normalize_provider_type(input: &str) -> Option<&'static str> {
         "gitlab" | "glab" => Some("gitlab"),
         "github" | "gh" => Some("github"),
         "outlook" => Some("outlook"),
+        "openrouter" => Some("openrouter"),
+        "ollama" => Some("ollama"),
         _ => None,
     }
 }
@@ -167,6 +171,8 @@ mod tests {
         assert_eq!(normalize_provider_type("anthropic"), Some("anthropic"));
         assert_eq!(normalize_provider_type("nvidia"), Some("nvidia"));
         assert_eq!(normalize_provider_type("copilot"), Some("copilot"));
+        assert_eq!(normalize_provider_type("openrouter"), Some("openrouter"));
+        assert_eq!(normalize_provider_type("ollama"), Some("ollama"));
         assert_eq!(normalize_provider_type("unknown"), None);
     }
 

@@ -86,6 +86,26 @@ static NVIDIA_PROFILE: InferenceProviderProfile = InferenceProviderProfile {
     default_headers: &[],
 };
 
+static OPENROUTER_PROFILE: InferenceProviderProfile = InferenceProviderProfile {
+    provider_type: "openrouter",
+    default_base_url: "https://openrouter.ai/api/v1",
+    protocols: OPENAI_PROTOCOLS,
+    credential_key_names: &["OPENROUTER_API_KEY"],
+    base_url_config_keys: &["OPENROUTER_BASE_URL"],
+    auth: AuthHeader::Bearer,
+    default_headers: &[],
+};
+
+static OLLAMA_PROFILE: InferenceProviderProfile = InferenceProviderProfile {
+    provider_type: "ollama",
+    default_base_url: "http://host.openshell.internal:11434/v1",
+    protocols: OPENAI_PROTOCOLS,
+    credential_key_names: &["OLLAMA_API_KEY"],
+    base_url_config_keys: &["OLLAMA_BASE_URL"],
+    auth: AuthHeader::Bearer,
+    default_headers: &[],
+};
+
 /// Look up the inference provider profile for a given provider type.
 ///
 /// Returns `None` for provider types that don't support inference routing
@@ -95,6 +115,8 @@ pub fn profile_for(provider_type: &str) -> Option<&'static InferenceProviderProf
         "openai" => Some(&OPENAI_PROFILE),
         "anthropic" => Some(&ANTHROPIC_PROFILE),
         "nvidia" => Some(&NVIDIA_PROFILE),
+        "openrouter" => Some(&OPENROUTER_PROFILE),
+        "ollama" => Some(&OLLAMA_PROFILE),
         _ => None,
     }
 }
@@ -176,7 +198,11 @@ mod tests {
         assert!(profile_for("openai").is_some());
         assert!(profile_for("anthropic").is_some());
         assert!(profile_for("nvidia").is_some());
+        assert!(profile_for("openrouter").is_some());
+        assert!(profile_for("ollama").is_some());
         assert!(profile_for("OpenAI").is_some()); // case insensitive
+        assert!(profile_for("OpenRouter").is_some()); // case insensitive
+        assert!(profile_for("Ollama").is_some()); // case insensitive
     }
 
     #[test]
@@ -201,9 +227,37 @@ mod tests {
     }
 
     #[test]
+    fn auth_for_openrouter_uses_bearer() {
+        let (auth, headers) = auth_for_provider_type("openrouter");
+        assert_eq!(auth, AuthHeader::Bearer);
+        assert!(headers.is_empty());
+    }
+
+    #[test]
+    fn auth_for_ollama_uses_bearer() {
+        let (auth, headers) = auth_for_provider_type("ollama");
+        assert_eq!(auth, AuthHeader::Bearer);
+        assert!(headers.is_empty());
+    }
+
+    #[test]
     fn auth_for_unknown_defaults_to_bearer() {
         let (auth, headers) = auth_for_provider_type("unknown");
         assert_eq!(auth, AuthHeader::Bearer);
         assert!(headers.is_empty());
+    }
+
+    #[test]
+    fn openrouter_profile_has_correct_base_url() {
+        let profile = profile_for("openrouter").expect("openrouter profile");
+        assert_eq!(profile.default_base_url, "https://openrouter.ai/api/v1");
+        assert_eq!(profile.credential_key_names, &["OPENROUTER_API_KEY"]);
+    }
+
+    #[test]
+    fn ollama_profile_has_correct_base_url() {
+        let profile = profile_for("ollama").expect("ollama profile");
+        assert_eq!(profile.default_base_url, "http://host.openshell.internal:11434/v1");
+        assert_eq!(profile.credential_key_names, &["OLLAMA_API_KEY"]);
     }
 }
